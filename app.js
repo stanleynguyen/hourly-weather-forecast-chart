@@ -32,26 +32,8 @@
 // console.log(distinctColorsSet);
 var distinctColorsSet = [{r: 2,g: 63,b: 165},{r: 125,g: 135,b: 185},{r: 190,g: 193,b: 212},{r: 214,g: 188,b: 192},{r: 187,g: 119,b: 132},{r: 142,g: 6,b: 59},{r: 74,g: 111,b: 227},{r: 133,g: 149,b: 225},{r: 181,g: 187,b: 227},{r: 230,g: 175,b: 185},{r: 224,g: 123,b: 145},{r: 211,g: 63,b: 106},{r: 17,g: 198,b: 56},{r: 141,g: 213,b: 147},{r: 198,g: 222,b: 199},{r: 234,g: 211,b: 198},{r: 240,g: 185,b: 141},{r: 239,g: 151,b: 8},{r: 15,g: 207,b: 192},{r: 156,g: 222,b: 214},{r: 213,g: 234,b: 231},{r: 243,g: 225,b: 235},{r: 246,g: 196,b: 225},{r: 247,g: 156,b: 212}];
 
+var lineData = [];
 
-var lineData = [{
-  x: 0,
-  y: 10
-}, {
-  x: 20,
-  y: 20
-}, {
-  x: 40,
-  y: 10
-}, {
-  x: 60,
-  y: 40
-}, {
-  x: 80,
-  y: 5
-}, {
-  x: 100,
-  y: 60
-}];
 var vis = d3.select('#graph'),
     WIDTH = 1000,
     HEIGHT = 500,
@@ -61,12 +43,8 @@ var vis = d3.select('#graph'),
       bottom: 20,
       left: 50
     },
-    xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([0, d3.max(lineData, function(d) {
-      return d.x;
-    })]),
-    yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, d3.max(lineData, function(d) {
-      return d.y;
-    })]),
+    xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([0, 23]),
+    yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, 40]),
     xAxis = d3.svg.axis()
       .scale(xRange)
       .tickSize(5)
@@ -96,11 +74,13 @@ var lineFunc = d3.svg.line()
     })
     .interpolate('linear');
 
-vis.append('svg:path')
-  .attr('d', lineFunc(lineData))
-  .attr('stroke', 'blue')
-  .attr('stroke-width', 2)
-  .attr('fill', 'none');
+    vis.append('svg:path')
+      .attr('d', lineFunc(lineData))
+      .attr('stroke', 'white')
+      .attr('stroke-width', 2)
+      .attr('fill', 'none');
+
+var citiesCounter = 0;
 
 $(document).on('submit', '#form--add-city', function(event) {
     event.preventDefault();
@@ -108,15 +88,32 @@ $(document).on('submit', '#form--add-city', function(event) {
     var data = {
         key: 'c54944da22b147b48ec152033160205',
         q: $this.find('input[name="city"]').val()};
-    console.log(data);
     $this[0].reset();
     $.ajax({
         url: 'https://api.apixu.com/v1/forecast.json',
         type: 'GET',
         data: data
     }).done(function(response) {
-        console.log(response);
+        var hourlyForecast = response.forecast.forecastday[0].hour;
+        var lineData = [];
+        hourlyForecast.forEach(function(value, index) {
+            lineData.push({
+                x: index,
+                y: hourlyForecast[index].temp_c
+            });
+        });
+        vis.append('svg:path')
+          .attr('d', lineFunc(lineData))
+          .attr('stroke', transformColor(citiesCounter))
+          .attr('stroke-width', 2)
+          .attr('fill', 'none');
+        citiesCounter++;
     }).fail(function() {
         alert('what the hell');
     });
 });
+
+function transformColor(counter) {
+    var color = distinctColorsSet[counter];
+    return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+}
