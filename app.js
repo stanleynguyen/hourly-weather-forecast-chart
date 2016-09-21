@@ -105,7 +105,18 @@ vis.append('svg:path')
 $(document).on('submit', '#form--add-city', function(event) {
     event.preventDefault();
     var $this = $(event.target);
-    var data = $this.serializeArray();
-    console.log(JSON.parse(JSON.stringify(data)));
+    var data = {
+        key: 'c54944da22b147b48ec152033160205',
+        q: $this.find('input[name="city"]').val()};
+    console.log(data);
     $this[0].reset();
+    $.ajax({
+        url: 'https://api.apixu.com/v1/forecast.json',
+        type: 'GET',
+        data: data
+    }).done(function(response) {
+        console.log(response);
+    }).fail(function() {
+        alert('what the hell');
+    });
 });
