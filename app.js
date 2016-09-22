@@ -39,9 +39,9 @@ var vis = d3.select('#graph'),
     HEIGHT = 500,
     MARGINS = {
       top: 20,
-      right: 20,
+      right: 0,
       bottom: 20,
-      left: 50
+      left: 25
     },
     xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([0, 23]),
     yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, 40]),
@@ -95,21 +95,23 @@ $(document).on('submit', '#form--add-city', function(event) {
         data: data
     }).done(function(response) {
         var hourlyForecast = response.forecast.forecastday[0].hour;
-        var lineData = [];
+        var lineData = [], cityColor = transformColor(citiesCounter);
         hourlyForecast.forEach(function(value, index) {
             lineData.push({
                 x: index,
                 y: hourlyForecast[index].temp_c
             });
         });
+        $('#modal--form-add-city').modal('hide');
         vis.append('svg:path')
           .attr('d', lineFunc(lineData))
-          .attr('stroke', transformColor(citiesCounter))
+          .attr('stroke', cityColor)
           .attr('stroke-width', 2)
           .attr('fill', 'none');
+        $('#cities-list').append('<p style="color: ' + cityColor + '">' + response.location.name + '</p>');
         citiesCounter++;
     }).fail(function() {
-        alert('what the hell');
+        alert('failed!');
     });
 });
 

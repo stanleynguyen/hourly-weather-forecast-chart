@@ -7,20 +7,32 @@
 <body>
   <h1 class="text-center">Weather Forecast Visualization</h1>
   <section class="container">
-    <svg id="graph" width="1000" height="500"></svg>
+    <div class="col-xs-11">
+      <svg id="graph" width="1200" height="500"></svg>
+    </div>
+    <div id="cities-list" class="col-xs-1">
+      <button class="btn btn-default" data-toggle="modal" data-target="#modal--form-add-city">Add City</button>
+      <br /><br />
+    </div>
   </section>
-  <br />
-  <br />
-  <section class="container">
-    <form id="form--add-city">
-      <fieldset class="form-group col-xs-10">
-        <input class="form-control" name="city" placeholder="Enter city name..." />
-      </fieldset>
-      <fieldset class="form-group col-xs-2">
-        <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
-      </fieldset>
-    </form>
-  </section>
+  <div id="modal--form-add-city" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add a city</h4>
+        </div>
+        <div class="modal-body">
+          <form id="form--add-city" class="form-inline">
+            <div class="form-group">
+              <input type="text" name="city" class="form-control col-xs-12" placeholder="Enter city's name..." />
+            </div>
+              <button type="submit" class="btn btn-success">&plus;</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
   <script   src="//code.jquery.com/jquery-3.1.0.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="//d3js.org/d3.v3.js"></script>
