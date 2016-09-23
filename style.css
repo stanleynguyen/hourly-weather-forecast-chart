@@ -1,5 +1,32 @@
+#form--add-city .form-control, #form--add-city .btn-success {
+  margin-top: 5px;
+}
+
 @media only screen and (min-width: 768px) {
   #form--add-city.form-inline .form-control {
-    width: 500px;
+    width: 520px;
   }
+}
+
+.spin {
+  -webkit-animation: spin 4s infinite linear;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+#modal--form-add-city .alert {
+  margin-top: 15px;
+  margin-bottom: 0;
+  line-height: 0.2;
 }

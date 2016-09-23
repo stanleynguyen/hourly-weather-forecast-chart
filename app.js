@@ -81,35 +81,50 @@ var lineFunc = d3.svg.line()
       .attr('fill', 'none');
 
 var citiesCounter = 0;
+var $addCityFormModal = $('#modal--form-add-city');
+
 
 $(document).on('submit', '#form--add-city', function(event) {
     event.preventDefault();
     var $this = $(event.target);
     var data = {
         key: 'c54944da22b147b48ec152033160205',
-        q: $this.find('input[name="city"]').val()};
-    $this[0].reset();
+        q: $this.find('input[name="city"]').val()
+    };
+    $this.find('input').attr('disabled', true);
+    $this.find('.btn').replaceWith('<button type="button" class="btn btn-success" disabled><i class="glyphicon glyphicon-repeat spin"></i></button>');
     $.ajax({
         url: 'https://api.apixu.com/v1/forecast.json',
         type: 'GET',
         data: data
     }).done(function(response) {
-        var hourlyForecast = response.forecast.forecastday[0].hour;
-        var lineData = [], cityColor = transformColor(citiesCounter);
-        hourlyForecast.forEach(function(value, index) {
-            lineData.push({
-                x: index,
-                y: hourlyForecast[index].temp_c
+        if (response.error) {
+            $this.find('input').attr('disabled', false);
+            $this.find('.btn').replaceWith('<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>');
+            $addCityFormModal.find('.alert').text(response.error.message);
+            $addCityFormModal.find('.alert').show();
+            setTimeout($addCityFormModal.find('.alert').hide.bind($addCityFormModal.find('.alert')), 5000);
+        } else {
+            var hourlyForecast = response.forecast.forecastday[0].hour;
+            var lineData = [], cityColor = transformColor(citiesCounter);
+            hourlyForecast.forEach(function(value, index) {
+                lineData.push({
+                    x: index,
+                    y: hourlyForecast[index].temp_c
+                });
             });
-        });
-        $('#modal--form-add-city').modal('hide');
-        vis.append('svg:path')
-          .attr('d', lineFunc(lineData))
-          .attr('stroke', cityColor)
-          .attr('stroke-width', 2)
-          .attr('fill', 'none');
-        $('#cities-list').append('<p style="color: ' + cityColor + '">' + response.location.name + '</p>');
-        citiesCounter++;
+            vis.append('svg:path')
+              .attr('d', lineFunc(lineData))
+              .attr('stroke', cityColor)
+              .attr('stroke-width', 2)
+              .attr('fill', 'none');
+            $('#cities-list').append('<p style="color: ' + cityColor + '">' + response.location.name + '</p>');
+            $this[0].reset();
+            $this.find('input').attr('disabled', false);
+            $this.find('.btn').replaceWith('<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></button>');
+            $addCityFormModal.modal('hide');
+            citiesCounter++;
+        }
     }).fail(function() {
         alert('failed!');
     });
