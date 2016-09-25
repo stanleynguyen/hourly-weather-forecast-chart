@@ -30,6 +30,17 @@
 // }
 //
 // console.log(distinctColorsSet);
+
+var dateTomorrow = new Date(+new Date() + 86400000);
+var options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    },
+    dateString = dateTomorrow.toLocaleDateString('en-US', options);
+$('#header--date').text("Hourly forecast for " + dateString);
+
 var distinctColorsSet = [{r: 2,g: 63,b: 165},{r: 125,g: 135,b: 185},{r: 190,g: 193,b: 212},{r: 214,g: 188,b: 192},{r: 187,g: 119,b: 132},{r: 142,g: 6,b: 59},{r: 74,g: 111,b: 227},{r: 133,g: 149,b: 225},{r: 181,g: 187,b: 227},{r: 230,g: 175,b: 185},{r: 224,g: 123,b: 145},{r: 211,g: 63,b: 106},{r: 17,g: 198,b: 56},{r: 141,g: 213,b: 147},{r: 198,g: 222,b: 199},{r: 234,g: 211,b: 198},{r: 240,g: 185,b: 141},{r: 239,g: 151,b: 8},{r: 15,g: 207,b: 192},{r: 156,g: 222,b: 214},{r: 213,g: 234,b: 231},{r: 243,g: 225,b: 235},{r: 246,g: 196,b: 225},{r: 247,g: 156,b: 212}];
 
 var lineData = [];
